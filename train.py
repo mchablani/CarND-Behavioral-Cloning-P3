@@ -9,8 +9,8 @@ images = []
 measurements = []
 
 
-def getImages(imgPath):
-  log = pd.read_csv(imgPath + '/driving_log.csv', header=None, names=['center', 'l', 'r', 'steering', 't', 'b', 's'])
+def getImages(imgPath, type, adj):
+  log = pd.read_csv(imgPath + '/driving_log.csv', header=None, names=['center', 'left', 'right', 'steering', 't', 'b', 's'])
   # print(log.columns)
 
   images = []
@@ -20,11 +20,11 @@ def getImages(imgPath):
 
   for idx, l in log.iterrows():
     # print(l)
-    fn = l['center'].split('/')[-1]
+    fn = l[type].split('/')[-1]
     source_path = imgPath + "/IMG/" + fn
     # print(source_path)
     image = cv2.imread(source_path)
-    measurement = l['steering']
+    measurement = l['steering'] + adj
     images.append(image)
     measurements.append(measurement)
 
@@ -43,7 +43,18 @@ def getImages(imgPath):
 
 # print(images[2].shape)
 
-images, measurements = getImages("./data")
+images, measurements = getImages("./data", 'center', 0)
+imagesl, measurementsl = getImages("./data", 'left', 0.2)
+imagesr, measurementsr = getImages("./data", 'right', -0.2)
+
+images.extend(imagesl)
+images.extend(imagesr)
+
+measurements.extend(measurementsl)
+measurements.extend(measurementsr)
+
+print(len(images))
+print(len(measurements))
 X_train = np.array(images)
 y_train = np.array(measurements)
 
