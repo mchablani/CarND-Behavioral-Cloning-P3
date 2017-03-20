@@ -1,39 +1,56 @@
 import pandas as pd
 import cv2
 from keras.models import Sequential
-from keras.layers import Dense, Flatten, Lambda, Convolution2D, MaxPooling2D, Dropout, Activation
+from keras.layers import Dense, Flatten, Lambda, Convolution2D, MaxPooling2D, Dropout, Activation,
 import numpy as np
 import keras as k
 
-log = pd.read_csv('./data/driving_log.csv', header=None, names=['center', 'l', 'r', 'steering', 't', 'b', 's'])
-print(log.columns)
-
 images = []
-s = log['steering']
+measurements = []
 
-for l in log['center']:
-  # print(l)
-  fn = l.split('/')[-1]
-  source_path = "./data/IMG/" + fn
-  # print(source_path)
-  image = cv2.imread(source_path)
-  images.append(image)
 
-print(len(images))
-print(len(s))
+def getImages(imgPath):
+  log = pd.read_csv(imgPath + '/driving_log.csv', header=None, names=['center', 'l', 'r', 'steering', 't', 'b', 's'])
+  # print(log.columns)
 
-# image_flipped = np.fliplr(images)
-# measurement_flipped = -measurement
+  images = []
+  measurements = []
+
+  # s = log['steering']
+
+  for idx, l in log.iterrows():
+    # print(l)
+    fn = l['center'].split('/')[-1]
+    source_path = imgPath + "/IMG/" + fn
+    # print(source_path)
+    image = cv2.imread(source_path)
+    measurement = l['steering']
+    images.append(image)
+    measurements.append(measurement)
+
+    # Data Augmentation
+    image_flipped = np.fliplr(image)
+    measurement_flipped = -measurement
+    images.append(image_flipped)
+    measurements.append(measurement_flipped)
+
+  print(len(images))
+  print(len(measurements))
+  return images, measurements
+  # image_flipped = np.fliplr(images)
+  # measurement_flipped = -measurement
 
 
 # print(images[2].shape)
 
+images, measurements = getImages("./data")
 X_train = np.array(images)
-y_train = np.array(s)
+y_train = np.array(measurements)
 
 
 model = Sequential()
-model.add(Lambda(lambda x: (x / 255.0) - 0.5, input_shape=(160, 320, 3)))
+model.add(Cropping2D(cropping=((50,20), (0,0)), input_shape=(160,320,3)))
+model.add(Lambda(lambda x: (x / 255.0) - 0.5))
 model.add(Convolution2D(32, 3, 3))
 model.add(MaxPooling2D((2, 2)))
 model.add(Dropout(0.5))
