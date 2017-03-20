@@ -1,7 +1,7 @@
 import pandas as pd
 import cv2
 from keras.models import Sequential
-from keras.layers import Dense, Flatten, Lambda, Convolution2D, MaxPooling2D, Dropout, Activation,
+from keras.layers import Dense, Flatten, Lambda, Convolution2D, MaxPooling2D, Dropout, Activation, Cropping2D
 import numpy as np
 import keras as k
 
