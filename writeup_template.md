@@ -75,50 +75,25 @@ For details about how I created the training data, see the next section.
 
 The overall strategy for deriving a model architecture was to ...
 
-My first step was to use a convolution neural network model similar to LeNet I thought this model might be appropriate because it has been quite successful at image classification with multiclass and is in general powerful enough when I was getting poor results, I switched to Nvidia architecture.  I never moved back to   
+My first step was to use a convolution neural network model similar to LeNet I thought this model might be appropriate because it has been quite successful at image classification with multiclass and is in general powerful enough when I was getting poor results, I switched to Nvidia architecture.  I never moved back to LeNet after that.  It might make sense to try again with LeNet now that I have a working solution.  
 
 In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
 
-To combat the overfitting, I modified the model so that ...
+To combat the overfitting, I modified the model so that I added drop out and added more training data.
 
-Then I ... 
-
-The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track... to improve the driving behavior in these cases, I ....
+Initially I used train data form both tracks to generalize the model more however it was hard to get a model that handled turns well.  So I just switched to data from track1.  Also lot of train data was casually geerated by manuvering the car using keyboard and not being too carefull.  I found this made final model performance not as stable throughout the track.  So it threw away most of train data and only used high quality train data where I slowly manuvered the car in similater and being careful to keep it in center of lane.  This gave much better model performance.
 
 At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
 
 ####2. Final Model Architecture
 
-The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes ...
+The final model architecture  consisted of a convolution neural network very similar to Nvidia architecture published here: https://devblogs.nvidia.com/parallelforall/deep-learning-self-driving-cars/
 
-Here is a visualization of the architecture (note: visualizing the architecture is optional according to the project rubric)
-
-![alt text][image1]
 
 ####3. Creation of the Training Set & Training Process
 
-To capture good driving behavior, I first recorded two laps on track one using center lane driving. Here is an example image of center lane driving:
+Initially I used train data form both tracks to generalize the model more however it was hard to get a model that handled turns well.  So I just switched to data from track1.  Also lot of train data was casually geerated by manuvering the car using keyboard and not being too carefull.  I found this made final model performance not as stable throughout the track.  So it threw away most of train data and only used high quality train data where I slowly manuvered the car in simulater and being careful to keep it in center of lane (three laps on track one).  This gave much better model performance.
 
-![alt text][image2]
-
-I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to .... These images show what a recovery looks like starting from ... :
-
-![alt text][image3]
-![alt text][image4]
-![alt text][image5]
-
-Then I repeated this process on track two in order to get more data points.
-
-To augment the data sat, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
-
-![alt text][image6]
-![alt text][image7]
-
-Etc ....
-
-After the collection process, I had X number of data points. I then preprocessed this data by ...
-
-
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
+My training data finally consisted of three laps on track one center lane driving along with Udacity provided data.
 
 I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
